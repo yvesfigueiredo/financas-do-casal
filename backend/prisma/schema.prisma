@@ -1,0 +1,298 @@
+// Prisma schema - Finanças do Casal (Sprint 2)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// USUÁRIOS
+// ============================================================
+
+model User {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  transactions     Transaction[]
+  creditCards      CreditCard[]
+  recurringExpenses RecurringExpense[]
+  bankAccounts      BankAccount[]
+  financialGoals    FinancialGoal[]
+  simulationScenarios SimulationScenario[]
+
+  @@map("users")
+}
+
+// ============================================================
+// CATEGORIAS
+// ============================================================
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  type      String   // "expense" | "income"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  transactions     Transaction[]
+  recurringExpenses RecurringExpense[]
+
+  @@map("categories")
+}
+
+// ============================================================
+// PARCELAMENTOS (inalterado da Sprint 1)
+// ============================================================
+
+model Installment {
+  id               String   @id @default(cuid())
+  description      String
+  totalAmount      Float    @map("total_amount")
+  installmentCount Int      @map("installment_count")
+  installmentValue Float    @map("installment_value")
+  startDate        DateTime @map("start_date")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  transactions Transaction[]
+
+  @@map("installments")
+}
+
+// ============================================================
+// CARTÕES DE CRÉDITO
+// ============================================================
+
+model CreditCard {
+  id             String   @id @default(cuid())
+  name           String
+  brand          String   // "Visa" | "Mastercard" | "Elo" | "Amex" | "Hipercard" | "Outro"
+  color          String   // hex color
+  limit          Float
+  closingDay     Int      @map("closing_day")    // dia do fechamento
+  dueDay         Int      @map("due_day")         // dia do vencimento
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  userId         String   @map("user_id")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  transactions     Transaction[]
+  recurringExpenses RecurringExpense[]
+
+  @@map("credit_cards")
+}
+
+// ============================================================
+// CONTAS BANCÁRIAS
+// ============================================================
+
+model BankAccount {
+  id             String   @id @default(cuid())
+  name           String
+  type           String   // "bank" | "wallet" | "checking" | "savings" | "digital"
+  initialBalance Float    @default(0) @map("initial_balance")
+  currentBalance Float    @default(0) @map("current_balance")
+  color          String   @default("#0ea5e9")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  userId         String   @map("user_id")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  transactionsOut Transaction[] @relation("TransactionBankAccount")
+  transfersFrom   Transfer[]    @relation("TransferFrom")
+  transfersTo     Transfer[]    @relation("TransferTo")
+  bankImports     BankImport[]
+
+  @@map("bank_accounts")
+}
+
+// ============================================================
+// TRANSFERÊNCIAS ENTRE CONTAS
+// ============================================================
+
+model Transfer {
+  id          String   @id @default(cuid())
+  amount      Float
+  description String
+  date        DateTime
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  fromAccountId String      @map("from_account_id")
+  fromAccount   BankAccount @relation("TransferFrom", fields: [fromAccountId], references: [id])
+
+  toAccountId String      @map("to_account_id")
+  toAccount   BankAccount @relation("TransferTo", fields: [toAccountId], references: [id])
+
+  @@map("transfers")
+}
+
+// ============================================================
+// DESPESAS RECORRENTES (Contas Fixas)
+// ============================================================
+
+model RecurringExpense {
+  id              String   @id @default(cuid())
+  description     String
+  amount          Float
+  // "monthly" | "weekly" | "biweekly" | "quarterly" | "semiannual" | "annual"
+  periodicity     String
+  dueDay          Int      @map("due_day")
+  automaticDebit  Boolean  @default(false) @map("automatic_debit")
+  active          Boolean  @default(true)
+  lastGenerated   DateTime? @map("last_generated")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  userId          String   @map("user_id")
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  categoryId      String   @map("category_id")
+  category        Category @relation(fields: [categoryId], references: [id])
+
+  // Cartão vinculado (opcional - se pagamento via cartão)
+  creditCardId    String?  @map("credit_card_id")
+  creditCard      CreditCard? @relation(fields: [creditCardId], references: [id])
+
+  // Lançamentos gerados por esta recorrência
+  transactions    Transaction[]
+
+  @@map("recurring_expenses")
+}
+
+// ============================================================
+// LANÇAMENTOS FINANCEIROS
+// ============================================================
+
+model Transaction {
+  id                String   @id @default(cuid())
+  description       String
+  amount            Float
+  type              String   // "income" | "expense"
+  date              DateTime
+  // Forma de pagamento: "cash" | "pix" | "debit" | "credit"
+  paymentMethod     String   @default("cash") @map("payment_method")
+  installmentNumber Int?     @map("installment_number")
+  installmentTotal  Int?     @map("installment_total")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  userId     String @map("user_id")
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  categoryId String   @map("category_id")
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  installmentId String?      @map("installment_id")
+  installment   Installment? @relation(fields: [installmentId], references: [id], onDelete: Cascade)
+
+  // Cartão vinculado (quando paymentMethod = "credit")
+  creditCardId String?     @map("credit_card_id")
+  creditCard   CreditCard? @relation(fields: [creditCardId], references: [id])
+
+  // Conta bancária vinculada
+  bankAccountId String?      @map("bank_account_id")
+  bankAccount   BankAccount? @relation("TransactionBankAccount", fields: [bankAccountId], references: [id])
+
+  // Recorrência que gerou este lançamento
+  recurringExpenseId String?          @map("recurring_expense_id")
+  recurringExpense   RecurringExpense? @relation(fields: [recurringExpenseId], references: [id])
+
+  @@map("transactions")
+}
+
+// ============================================================
+// ALERTAS
+// ============================================================
+
+model Alert {
+  id        String   @id @default(cuid())
+  type      String   // ver AlertType enum nos types
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  dismissed Boolean  @default(false)
+  dueDate   DateTime? @map("due_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Referências opcionais ao recurso que gerou o alerta
+  creditCardId       String? @map("credit_card_id")
+  recurringExpenseId String? @map("recurring_expense_id")
+  installmentId      String? @map("installment_id")
+
+  @@map("alerts")
+}
+
+// ============================================================
+// OBJETIVOS FINANCEIROS (Sprint 3)
+// ============================================================
+
+model FinancialGoal {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  targetAmount  Float    @map("target_amount")
+  currentAmount Float    @default(0) @map("current_amount")
+  deadline      DateTime?
+  category      String   @default("savings") // "savings" | "investment" | "debt" | "purchase" | "emergency"
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  userId        String   @map("user_id")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("financial_goals")
+}
+
+// ============================================================
+// CENÁRIOS DE SIMULAÇÃO (Sprint 3)
+// ============================================================
+
+model SimulationScenario {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  inputJson   String   @map("input_json")   // JSON serializado do SimulationInput
+  resultJson  String   @map("result_json")  // JSON serializado do SimulationResult
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("simulation_scenarios")
+}
+
+// ============================================================
+// IMPORTAÇÕES BANCÁRIAS (Sprint 3)
+// ============================================================
+
+model BankImport {
+  id          String   @id @default(cuid())
+  filename    String
+  format      String   // "ofx" | "csv"
+  status      String   @default("pending") // "pending" | "processed" | "failed"
+  totalRows   Int      @default(0) @map("total_rows")
+  importedRows Int     @default(0) @map("imported_rows")
+  duplicateRows Int    @default(0) @map("duplicate_rows")
+  errorMessage String? @map("error_message")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  bankAccountId String      @map("bank_account_id")
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+
+  @@map("bank_imports")
+}
