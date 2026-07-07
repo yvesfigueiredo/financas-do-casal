@@ -85,19 +85,19 @@ export function AlertsPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
       <PageHeader title="Central de Alertas"
         subtitle={data?.unreadCount ? `${data.unreadCount} alerta${data.unreadCount !== 1 ? "s" : ""} não lido${data.unreadCount !== 1 ? "s" : ""}` : "Todos os alertas em dia"}
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             {unread.length > 0 && (
               <Button variant="outline" onClick={handleMarkAllRead} loading={markReadMutation.isPending}
-                leftIcon={<CheckCheck className="w-4 h-4" />}>
+                leftIcon={<CheckCheck className="w-4 h-4" />} fullWidth className="sm:w-auto">
                 Marcar todos como lidos
               </Button>
             )}
             <Button variant="secondary" onClick={handleRunScan}
-              leftIcon={<RefreshCw className="w-4 h-4" />}>
+              leftIcon={<RefreshCw className="w-4 h-4" />} fullWidth className="sm:w-auto">
               Verificar alertas
             </Button>
           </div>

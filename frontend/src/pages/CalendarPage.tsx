@@ -93,7 +93,7 @@ export function CalendarPage() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Calendário Financeiro" subtitle="Visualize todos os eventos por dia" />
 
       {isLoading && <PageLoader />}
@@ -122,7 +122,7 @@ export function CalendarPage() {
             {/* Dias da semana */}
             <div className="grid grid-cols-7 border-b border-slate-100">
               {dayNames.map((d) => (
-                <div key={d} className="text-center py-2 text-xs font-semibold text-slate-400">{d}</div>
+                <div key={d} className="text-center py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold text-slate-400">{d}</div>
               ))}
             </div>
 
@@ -130,7 +130,7 @@ export function CalendarPage() {
             <div className="grid grid-cols-7">
               {/* Células vazias do início */}
               {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-slate-50" />
+                <div key={`empty-${i}`} className="min-h-[60px] sm:min-h-[80px] border-b border-r border-slate-50" />
               ))}
 
               {/* Dias */}
@@ -141,9 +141,9 @@ export function CalendarPage() {
 
                 return (
                   <button key={day} onClick={() => setSelectedDay(day === selectedDay ? null : day)}
-                    className={["min-h-[80px] p-1.5 border-b border-r border-slate-50 text-left hover:bg-slate-50 transition-colors w-full",
+                    className={["min-h-[60px] sm:min-h-[80px] p-1 sm:p-1.5 border-b border-r border-slate-50 text-left hover:bg-slate-50 transition-colors w-full",
                       isSelected ? "bg-brand-50 ring-1 ring-inset ring-brand-300" : ""].join(" ")}>
-                    <span className={["inline-flex w-6 h-6 items-center justify-center rounded-full text-xs font-semibold mb-1",
+                    <span className={["inline-flex w-5 h-5 sm:w-6 sm:h-6 items-center justify-center rounded-full text-[10px] sm:text-xs font-semibold mb-1",
                       isToday ? "bg-brand-600 text-white" : "text-slate-700"].join(" ")}>
                       {day}
                     </span>

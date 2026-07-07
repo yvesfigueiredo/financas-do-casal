@@ -95,14 +95,14 @@ export function SimpleTransactionForm({ defaultUserId = "", onSuccess, onCancel 
       <Input label="Descrição" placeholder="Ex: Supermercado" value={form.description}
         onChange={(e) => set("description", e.target.value)} error={errors.description} />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label="Valor (R$)" type="number" min="0.01" step="0.01" placeholder="0,00"
           value={form.amount} onChange={(e) => set("amount", e.target.value)} error={errors.amount} />
         <Input label="Data" type="date" value={form.date}
           onChange={(e) => set("date", e.target.value)} error={errors.date} />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Select label="Pessoa" options={(users ?? []).map((u) => ({ value: u.id, label: u.name }))}
           placeholder="Selecione..." value={form.userId}
           onChange={(e) => { set("userId", e.target.value); set("creditCardId", ""); set("bankAccountId", ""); }}

@@ -41,7 +41,7 @@ export function AnnualPage() {
     v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v}`;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Resumo Anual" subtitle="Receitas, despesas e saldo acumulado do ano"
         action={
           <Select options={yearOptions} value={String(localYear)}
@@ -54,7 +54,7 @@ export function AnnualPage() {
       {data && (
         <div className="space-y-6">
           {/* Cards de totais do ano */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Card className="border-l-4 border-l-emerald-500">
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Receitas no Ano</p>
               <p className="text-2xl font-bold text-emerald-600 font-mono mt-1">
@@ -138,12 +138,34 @@ export function AnnualPage() {
             </ResponsiveContainer>
           </Card>
 
-          {/* Tabela mensal */}
+          {/* Tabela mensal — cards no mobile, tabela no desktop */}
           <Card padding="none">
-            <div className="px-5 py-4 border-b border-slate-100">
+            <div className="px-4 sm:px-5 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Detalhamento por Mês</h3>
             </div>
-            <div className="overflow-x-auto">
+
+            {/* Mobile: cards */}
+            <div className="sm:hidden divide-y divide-slate-50">
+              {data.months.map((m, i) => (
+                <div key={m.month} className="px-4 py-3">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-semibold text-slate-700">{m.monthLabel}</span>
+                    <span className={["text-sm font-mono font-bold",
+                      (data.accumulatedBalance[i]?.balance ?? 0) >= 0 ? "text-slate-700" : "text-red-600"].join(" ")}>
+                      {formatCurrency(data.accumulatedBalance[i]?.balance ?? 0)}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div><p className="text-slate-400">Receitas</p><p className="font-mono text-emerald-600">{formatCurrency(m.totalIncome)}</p></div>
+                    <div><p className="text-slate-400">Despesas</p><p className="font-mono text-red-600">{formatCurrency(m.totalExpense)}</p></div>
+                    <div><p className="text-slate-400">Saldo</p><p className={["font-mono font-semibold", m.balance >= 0 ? "text-brand-700" : "text-red-600"].join(" ")}>{formatCurrency(m.balance)}</p></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: tabela */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-100">

@@ -69,7 +69,7 @@ export function InstallmentForm({ defaultUserId = "", onSuccess, onCancel }: Pro
         value={form.description} onChange={(e) => set("description", e.target.value)}
         error={errors.description} />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label="Valor total (R$)" type="number" min="0.01" step="0.01" placeholder="0,00"
           value={form.totalAmount} onChange={(e) => set("totalAmount", e.target.value)}
           error={errors.totalAmount} />
@@ -94,7 +94,7 @@ export function InstallmentForm({ defaultUserId = "", onSuccess, onCancel }: Pro
         onChange={(e) => set("startDate", e.target.value)} error={errors.startDate}
         hint="As demais parcelas serão criadas nos meses seguintes" />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Select label="Pessoa" options={(users ?? []).map((u) => ({ value: u.id, label: u.name }))}
           placeholder="Selecione..." value={form.userId}
           onChange={(e) => { set("userId", e.target.value); set("creditCardId", ""); }}

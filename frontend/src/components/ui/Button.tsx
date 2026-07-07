@@ -27,9 +27,9 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm gap-1.5",
-  md: "px-4 py-2 text-sm gap-2",
-  lg: "px-6 py-3 text-base gap-2",
+  sm: "px-3 py-1.5 text-sm gap-1.5 min-h-[40px] sm:min-h-0",
+  md: "px-4 py-2 text-sm gap-2 min-h-[44px] sm:min-h-0",
+  lg: "px-6 py-3 text-base gap-2 min-h-[48px] sm:min-h-0",
 };
 
 export function Button({

@@ -145,7 +145,7 @@ export function SimulatorPage() {
   ];
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <PageHeader title="Simulador Financeiro"
         subtitle="Simule o impacto antes de confirmar qualquer gasto"
         action={

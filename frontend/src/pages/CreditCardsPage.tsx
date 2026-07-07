@@ -55,7 +55,7 @@ function CardForm({ initial, userId, onSave, onCancel, loading }: {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label="Nome do cartão" placeholder="Ex: Nubank" value={form.name}
           onChange={(e) => set("name", e.target.value)} error={errors.name} />
         <Select label="Bandeira" options={BRANDS.map((b) => ({ value: b, label: b }))}
@@ -73,7 +73,7 @@ function CardForm({ initial, userId, onSave, onCancel, loading }: {
       </div>
       <Input label="Limite (R$)" type="number" min="1" step="0.01" placeholder="0,00"
         value={form.limit} onChange={(e) => set("limit", e.target.value)} error={errors.limit} />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label="Dia de fechamento" type="number" min="1" max="31" placeholder="Ex: 3"
           value={form.closingDay} onChange={(e) => set("closingDay", e.target.value)} error={errors.closingDay} />
         <Input label="Dia de vencimento" type="number" min="1" max="31" placeholder="Ex: 10"
@@ -114,7 +114,7 @@ export function CreditCardsPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Cartões de Crédito" subtitle="Gerencie seus cartões e acompanhe faturas"
         action={<Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)}>Novo Cartão</Button>} />
 

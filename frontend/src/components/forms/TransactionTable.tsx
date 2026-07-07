@@ -3,10 +3,7 @@ import { Trash2, CreditCard } from "lucide-react";
 import { TransactionWithRelations } from "../../types";
 import { Button } from "../ui/Button";
 import { formatCurrency, formatDate } from "../../utils/formatters";
-import {
-  useDeleteTransaction,
-  useDeleteInstallment,
-} from "../../hooks/useTransactions";
+import { useDeleteTransaction, useDeleteInstallment } from "../../hooks/useTransactions";
 
 interface TransactionTableProps {
   transactions: TransactionWithRelations[];
@@ -18,35 +15,61 @@ interface DeleteTarget {
   description: string;
 }
 
+// Card mobile para substituir linhas de tabela em telas pequenas
+function TransactionCard({
+  t,
+  onDelete,
+}: {
+  t: TransactionWithRelations;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3 p-4 border-b border-slate-50 last:border-b-0">
+      <div className="flex items-start gap-3 min-w-0">
+        {t.installmentId && <CreditCard className="w-3.5 h-3.5 text-slate-300 flex-shrink-0 mt-1" />}
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-slate-700 truncate">{t.description}</p>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
+            <span className="text-xs text-slate-400">{t.category.name}</span>
+            <span className="text-slate-200">·</span>
+            <span className="text-xs text-slate-400">{t.user.name}</span>
+            <span className="text-slate-200">·</span>
+            <span className="text-xs text-slate-400 font-mono">{formatDate(t.date)}</span>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <span className={["font-semibold font-mono text-sm", t.type === "income" ? "text-emerald-600" : "text-red-600"].join(" ")}>
+          {t.type === "income" ? "+" : "-"}{formatCurrency(t.amount)}
+        </span>
+        <button
+          onClick={onDelete}
+          className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all ml-1"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function TransactionTable({ transactions }: TransactionTableProps) {
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
-
   const deleteSimple = useDeleteTransaction();
   const deleteInstallment = useDeleteInstallment();
 
   const handleDeleteClick = (t: TransactionWithRelations) => {
     if (t.installmentId) {
-      setDeleteTarget({
-        type: "installment",
-        id: t.installmentId,
-        description: t.installment?.description ?? t.description,
-      });
+      setDeleteTarget({ type: "installment", id: t.installmentId, description: t.installment?.description ?? t.description });
     } else {
-      setDeleteTarget({
-        type: "simple",
-        id: t.id,
-        description: t.description,
-      });
+      setDeleteTarget({ type: "simple", id: t.id, description: t.description });
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    if (deleteTarget.type === "simple") {
-      await deleteSimple.mutateAsync(deleteTarget.id);
-    } else {
-      await deleteInstallment.mutateAsync(deleteTarget.id);
-    }
+    if (deleteTarget.type === "simple") await deleteSimple.mutateAsync(deleteTarget.id);
+    else await deleteInstallment.mutateAsync(deleteTarget.id);
     setDeleteTarget(null);
   };
 
@@ -60,25 +83,23 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
 
   return (
     <>
-      <div className="overflow-x-auto">
+      {/* Versão mobile: cards empilhados */}
+      <div className="sm:hidden divide-y divide-slate-50">
+        {transactions.map((t) => (
+          <TransactionCard key={t.id} t={t} onDelete={() => handleDeleteClick(t)} />
+        ))}
+      </div>
+
+      {/* Versão desktop: tabela */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-100">
-              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3 pl-1">
-                Descrição
-              </th>
-              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">
-                Categoria
-              </th>
-              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">
-                Pessoa
-              </th>
-              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">
-                Data
-              </th>
-              <th className="text-right text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">
-                Valor
-              </th>
+              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3 pl-1">Descrição</th>
+              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">Categoria</th>
+              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">Pessoa</th>
+              <th className="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">Data</th>
+              <th className="text-right text-xs font-semibold text-slate-400 uppercase tracking-wider pb-3">Valor</th>
               <th className="pb-3 w-10" />
             </tr>
           </thead>
@@ -87,43 +108,22 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
               <tr key={t.id} className="hover:bg-slate-50/50 transition-colors group">
                 <td className="py-3 pl-1">
                   <div className="flex items-center gap-2">
-                    {t.installmentId && (
-                      <CreditCard className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
-                    )}
-                    <span className="font-medium text-slate-700">
-                      {t.description}
-                    </span>
+                    {t.installmentId && <CreditCard className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />}
+                    <span className="font-medium text-slate-700">{t.description}</span>
                   </div>
                 </td>
-                <td className="py-3">
-                  <span className="text-slate-500">{t.category.name}</span>
-                </td>
-                <td className="py-3">
-                  <span className="text-slate-500">{t.user.name}</span>
-                </td>
-                <td className="py-3">
-                  <span className="text-slate-400 font-mono text-xs">
-                    {formatDate(t.date)}
-                  </span>
-                </td>
+                <td className="py-3"><span className="text-slate-500">{t.category.name}</span></td>
+                <td className="py-3"><span className="text-slate-500">{t.user.name}</span></td>
+                <td className="py-3"><span className="text-slate-400 font-mono text-xs">{formatDate(t.date)}</span></td>
                 <td className="py-3 text-right">
-                  <span
-                    className={[
-                      "font-semibold font-mono",
-                      t.type === "income"
-                        ? "text-emerald-600"
-                        : "text-red-600",
-                    ].join(" ")}
-                  >
-                    {t.type === "income" ? "+" : "-"}
-                    {formatCurrency(t.amount)}
+                  <span className={["font-semibold font-mono", t.type === "income" ? "text-emerald-600" : "text-red-600"].join(" ")}>
+                    {t.type === "income" ? "+" : "-"}{formatCurrency(t.amount)}
                   </span>
                 </td>
                 <td className="py-3 text-right">
                   <button
                     onClick={() => handleDeleteClick(t)}
                     className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
-                    title="Excluir"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -134,47 +134,26 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
         </table>
       </div>
 
-      {/* Modal de confirmação de exclusão */}
+      {/* Modal de confirmação */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setDeleteTarget(null)}
-          />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteTarget(null)} />
           <div className="relative bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full animate-slide-up">
-            <h3 className="text-base font-semibold text-slate-800">
-              Confirmar exclusão
-            </h3>
+            <h3 className="text-base font-semibold text-slate-800">Confirmar exclusão</h3>
             {deleteTarget.type === "installment" ? (
               <p className="mt-2 text-sm text-slate-500">
-                Isso excluirá o parcelamento{" "}
-                <strong>"{deleteTarget.description}"</strong> e{" "}
-                <strong>todas as suas parcelas</strong>. Esta ação não pode ser
-                desfeita.
+                Isso excluirá o parcelamento <strong>"{deleteTarget.description}"</strong> e{" "}
+                <strong>todas as suas parcelas</strong>. Esta ação não pode ser desfeita.
               </p>
             ) : (
               <p className="mt-2 text-sm text-slate-500">
-                Excluir o lançamento{" "}
-                <strong>"{deleteTarget.description}"</strong>? Esta ação não
-                pode ser desfeita.
+                Excluir o lançamento <strong>"{deleteTarget.description}"</strong>? Esta ação não pode ser desfeita.
               </p>
             )}
             <div className="flex gap-2 mt-5">
-              <Button
-                variant="outline"
-                onClick={() => setDeleteTarget(null)}
-                fullWidth
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="danger"
-                onClick={handleConfirmDelete}
-                loading={
-                  deleteSimple.isPending || deleteInstallment.isPending
-                }
-                fullWidth
-              >
+              <Button variant="outline" onClick={() => setDeleteTarget(null)} fullWidth>Cancelar</Button>
+              <Button variant="danger" onClick={handleConfirmDelete}
+                loading={deleteSimple.isPending || deleteInstallment.isPending} fullWidth>
                 Excluir
               </Button>
             </div>

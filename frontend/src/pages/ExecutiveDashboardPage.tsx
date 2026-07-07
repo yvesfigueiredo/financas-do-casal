@@ -30,7 +30,7 @@ export function ExecutiveDashboardPage() {
   const { data: insights } = useFinancialInsights(selectedUserId);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Dashboard Executivo" subtitle="Visão consolidada da sua saúde financeira" />
 
       {isLoading && <PageLoader />}
@@ -47,7 +47,7 @@ export function ExecutiveDashboardPage() {
           {/* Coluna central: Stats + Top entidades */}
           <div className="lg:col-span-2 space-y-5">
             {/* Saldo */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Card className="border-l-4 border-l-brand-500">
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Saldo Atual</p>
                 <p className={["text-2xl font-bold font-mono mt-1", data.balance.current >= 0 ? "text-brand-700" : "text-red-600"].join(" ")}>
@@ -65,7 +65,7 @@ export function ExecutiveDashboardPage() {
             {/* Médias */}
             <Card>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Médias Mensais (3 meses)</p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <MiniStat icon={TrendingUp} label="Receita" value={formatCurrency(data.averages.income)} color="#10b981" />
                 <MiniStat icon={TrendingDown} label="Despesa" value={formatCurrency(data.averages.expense)} color="#f87171" />
                 <MiniStat icon={PiggyBank} label="Economia" value={formatCurrency(data.averages.savings)} color="#0ea5e9" />
@@ -75,7 +75,7 @@ export function ExecutiveDashboardPage() {
             {/* Top entidades */}
             <Card>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Destaques do Mês</p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.topEntities.category && (
                   <MiniStat icon={Tag} label="Maior categoria" value={`${data.topEntities.category.name} · ${formatCurrency(data.topEntities.category.amount)}`} color="#8b5cf6" />
                 )}
@@ -92,7 +92,7 @@ export function ExecutiveDashboardPage() {
             </Card>
 
             {/* Objetivos e Alertas */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Card>
                 <div className="flex items-center gap-2 mb-2">
                   <Target className="w-4 h-4 text-emerald-500" />

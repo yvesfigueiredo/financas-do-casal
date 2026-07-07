@@ -37,7 +37,7 @@ export function ProjectionPage() {
   const tickFormatter = (v: number) => v >= 1000 ? `R$${(v / 1000).toFixed(0)}k` : `R$${v.toFixed(0)}`;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Projeção Financeira" subtitle="Saldo projetado considerando todos os compromissos futuros" />
 
       {/* Seletor de período */}
@@ -57,7 +57,7 @@ export function ProjectionPage() {
       {data && (
         <div className="space-y-6">
           {/* Cards de resumo */}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Card className="border-l-4 border-l-brand-500">
               <p className="text-xs text-slate-400">Receita média/mês</p>
               <p className="text-xl font-bold text-emerald-600 font-mono mt-1">{formatCurrency(data.summary.averageMonthlyIncome)}</p>
@@ -79,7 +79,7 @@ export function ProjectionPage() {
           </div>
 
           {/* Marcos de projeção */}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { label: "6 meses", value: data.summary.projectedBalanceAt6m },
               { label: "12 meses", value: data.summary.projectedBalanceAt12m },
@@ -117,12 +117,34 @@ export function ProjectionPage() {
             </ResponsiveContainer>
           </Card>
 
-          {/* Tabela detalhada */}
+          {/* Tabela detalhada — cards no mobile, tabela no desktop */}
           <Card padding="none">
-            <div className="px-5 py-4 border-b border-slate-100">
+            <div className="px-4 sm:px-5 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Detalhamento Mensal</h3>
             </div>
-            <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+
+            {/* Mobile: cards */}
+            <div className="sm:hidden max-h-[420px] overflow-y-auto divide-y divide-slate-50">
+              {data.months.map((m) => (
+                <div key={`${m.year}-${m.month}`} className="px-4 py-3">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-semibold text-slate-700">{m.monthLabel}</span>
+                    <span className={["text-sm font-mono font-bold", m.runningBalance >= 0 ? "text-brand-700" : "text-red-600"].join(" ")}>
+                      {formatCurrency(m.runningBalance)}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                    <div className="flex justify-between"><span className="text-slate-400">Receita</span><span className="font-mono text-emerald-600">+{formatCurrency(m.projectedIncome)}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-400">Despesa</span><span className="font-mono text-red-500">-{formatCurrency(m.projectedExpense)}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-400">Parcelas</span><span className="font-mono text-orange-500">-{formatCurrency(m.projectedInstallments)}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-400">Fixas</span><span className="font-mono text-purple-500">-{formatCurrency(m.projectedRecurring)}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: tabela */}
+            <div className="hidden sm:block overflow-x-auto max-h-[400px] overflow-y-auto">
               <table className="w-full text-xs">
                 <thead className="sticky top-0 bg-white">
                   <tr className="border-b border-slate-100">

@@ -42,11 +42,11 @@ export function TimelinePage() {
   const grouped = events ? groupByDate(events) : new Map();
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
       <PageHeader title="Linha do Tempo Financeira" subtitle="Todos os eventos futuros em ordem cronológica"
         action={
           <Select options={periodOptions} value={String(daysAhead)}
-            onChange={(e) => setDaysAhead(Number(e.target.value))} className="w-48" />
+            onChange={(e) => setDaysAhead(Number(e.target.value))} className="w-full sm:w-48" />
         } />
 
       {isLoading && <PageLoader />}

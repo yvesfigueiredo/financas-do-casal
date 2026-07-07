@@ -12,10 +12,8 @@ async function main() {
     process.exit(1);
   }
 
-  const server = app.listen(config.port, "0.0.0.0", () => {
-    console.log(`🚀 Servidor rodando em:`);
-    console.log(`   Local:   http://localhost:${config.port}`);
-    console.log(`   Rede:    http://192.168.18.32:${config.port}`);
+  const server = app.listen(config.port, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${config.port}`);
     console.log(`📊 Ambiente: ${config.env}`);
     console.log(`🌐 Frontend permitido: ${config.frontendUrl}`);
     console.log(`💚 Health check: http://localhost:${config.port}/health`);

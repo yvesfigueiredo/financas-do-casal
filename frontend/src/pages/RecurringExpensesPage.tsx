@@ -63,13 +63,13 @@ function RecurringForm({ initial, userId, onSave, onCancel, loading }: {
     <form onSubmit={handleSubmit} className="space-y-4">
       <Input label="Descrição" placeholder="Ex: Aluguel, Internet..." value={form.description}
         onChange={(e) => set("description", e.target.value)} error={errors.description} />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label="Valor (R$)" type="number" min="0.01" step="0.01" placeholder="0,00"
           value={form.amount} onChange={(e) => set("amount", e.target.value)} error={errors.amount} />
         <Input label="Dia de vencimento" type="number" min="1" max="31" placeholder="Ex: 5"
           value={form.dueDay} onChange={(e) => set("dueDay", e.target.value)} error={errors.dueDay} />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Select label="Periodicidade" options={PERIODICITIES} value={form.periodicity}
           onChange={(e) => set("periodicity", e.target.value)} />
         <Select label="Titular" options={(users ?? []).map((u) => ({ value: u.id, label: u.name }))}
@@ -122,15 +122,16 @@ export function RecurringExpensesPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Contas Fixas" subtitle="Despesas recorrentes e automáticas"
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Button variant="outline" leftIcon={<RefreshCw className="w-4 h-4" />}
-              loading={generateMutation.isPending} onClick={() => generateMutation.mutate({})}>
+              loading={generateMutation.isPending} onClick={() => generateMutation.mutate({})}
+              fullWidth className="sm:w-auto">
               Gerar este mês
             </Button>
-            <Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)}>
+            <Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)} fullWidth className="sm:w-auto">
               Nova conta fixa
             </Button>
           </div>

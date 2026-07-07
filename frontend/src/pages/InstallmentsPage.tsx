@@ -4,6 +4,7 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { NewTransactionModal } from "../components/forms/NewTransactionModal";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
+import { FAB } from "../components/ui/FAB";
 import { PageLoader, ErrorMessage, EmptyState, Badge } from "../components/ui/Feedback";
 import { useInstallments } from "../hooks/useInstallments";
 import { useDeleteInstallment } from "../hooks/useTransactions";
@@ -199,12 +200,13 @@ export function InstallmentsPage() {
   );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto pb-24 sm:pb-6">
       <PageHeader
         title="Parcelas"
         subtitle="Compras parceladas e linha do tempo"
         action={
           <Button
+            className="hidden sm:inline-flex"
             leftIcon={<Plus className="w-4 h-4" />}
             onClick={() => setModalOpen(true)}
           >
@@ -282,6 +284,8 @@ export function InstallmentsPage() {
         onClose={() => setModalOpen(false)}
         defaultUserId={currentUser?.id}
       />
+
+      <FAB onClick={() => setModalOpen(true)} label="Nova compra parcelada" />
 
       {/* Confirmação de exclusão */}
       {deleteTarget && (

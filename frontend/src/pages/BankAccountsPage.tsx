@@ -61,12 +61,12 @@ export function BankAccountsPage() {
   const totalBalance = (accounts ?? []).reduce((s, a) => s + a.currentBalance, 0);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Contas Bancárias" subtitle="Saldos, entradas e saídas por conta"
         action={
-          <div className="flex gap-2">
-            <Button variant="outline" leftIcon={<ArrowLeftRight className="w-4 h-4" />} onClick={() => setTransferModalOpen(true)}>Transferir</Button>
-            <Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)}>Nova Conta</Button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button variant="outline" leftIcon={<ArrowLeftRight className="w-4 h-4" />} onClick={() => setTransferModalOpen(true)} fullWidth className="sm:w-auto">Transferir</Button>
+            <Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)} fullWidth className="sm:w-auto">Nova Conta</Button>
           </div>
         } />
 
@@ -148,7 +148,7 @@ export function BankAccountsPage() {
         <form onSubmit={handleCreate} className="space-y-4">
           <Input label="Nome" placeholder="Ex: Nubank Conta" value={form.name}
             onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} error={formErrors.name} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Select label="Tipo" options={ACCOUNT_TYPES} value={form.type}
               onChange={(e) => setForm((p) => ({ ...p, type: e.target.value as AccountType }))} />
             <Input label="Saldo inicial (R$)" type="number" step="0.01" placeholder="0,00"
@@ -180,7 +180,7 @@ export function BankAccountsPage() {
             onChange={(e) => setTForm((p) => ({ ...p, fromAccountId: e.target.value }))} />
           <Select label="Para" options={accountOptions} placeholder="Conta de destino..." value={tForm.toAccountId}
             onChange={(e) => setTForm((p) => ({ ...p, toAccountId: e.target.value }))} />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input label="Valor (R$)" type="number" min="0.01" step="0.01" placeholder="0,00"
               value={tForm.amount} onChange={(e) => setTForm((p) => ({ ...p, amount: e.target.value }))} />
             <Input label="Data" type="date" value={tForm.date}

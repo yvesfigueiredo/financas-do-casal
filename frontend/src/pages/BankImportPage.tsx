@@ -50,7 +50,7 @@ export function BankImportPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
       <PageHeader title="Importação Bancária" subtitle="Importe extratos OFX ou CSV automaticamente" />
 
       <Card className="mb-6">

@@ -56,13 +56,13 @@ function GoalForm({ initial, userId, onSave, onCancel, loading }: {
         onChange={(e) => set("title", e.target.value)} error={errors.title} />
       <Input label="Descrição (opcional)" placeholder="Detalhes do objetivo" value={form.description}
         onChange={(e) => set("description", e.target.value)} />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input label="Valor alvo (R$)" type="number" min="1" step="0.01" placeholder="0,00"
           value={form.targetAmount} onChange={(e) => set("targetAmount", e.target.value)} error={errors.targetAmount} />
         <Input label="Valor já guardado (R$)" type="number" min="0" step="0.01" placeholder="0,00"
           value={form.currentAmount} onChange={(e) => set("currentAmount", e.target.value)} />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Select label="Categoria" options={CATEGORY_OPTIONS} value={form.category}
           onChange={(e) => set("category", e.target.value)} />
         <Input label="Prazo (opcional)" type="date" value={form.deadline}
@@ -107,7 +107,7 @@ export function GoalsPage() {
   const totalCurrent = (goals ?? []).reduce((s, g) => s + g.currentAmount, 0);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <PageHeader title="Objetivos Financeiros" subtitle="Metas de poupança, investimento e conquistas"
         action={<Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)}>Novo Objetivo</Button>} />
 

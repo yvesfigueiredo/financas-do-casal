@@ -10,6 +10,7 @@ import { PeriodFilter } from "../components/forms/PeriodFilter";
 import { NewTransactionModal } from "../components/forms/NewTransactionModal";
 import { PageLoader, ErrorMessage } from "../components/ui/Feedback";
 import { Button } from "../components/ui/Button";
+import { FAB } from "../components/ui/FAB";
 import { useDashboard } from "../hooks/useDashboard";
 import { useFilterStore } from "../stores/filter.store";
 import { useAuthStore } from "../stores/auth.store";
@@ -23,13 +24,13 @@ function CreditSummaryCard({ used, available, limit }: { used: number; available
   return (
     <Card className="border-l-4 border-l-purple-500">
       <div className="flex items-start justify-between">
-        <div>
+        <div className="min-w-0">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Crédito</p>
-          <p className="text-2xl font-bold text-purple-700 mt-1 font-mono">{formatCurrency(available)}</p>
-          <p className="text-xs text-slate-400 mt-0.5">disponível de {formatCurrency(limit)}</p>
+          <p className="text-xl sm:text-2xl font-bold text-purple-700 mt-1 font-mono truncate">{formatCurrency(available)}</p>
+          <p className="text-xs text-slate-400 mt-0.5 truncate">disponível de {formatCurrency(limit)}</p>
         </div>
-        <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
-          <CreditCard className="w-5 h-5 text-purple-500" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+          <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
         </div>
       </div>
       <div className="mt-3">
@@ -76,16 +77,21 @@ export function DashboardPage() {
   const cardChartData = (data?.byCard ?? []).map((c) => ({ name: c.cardName, value: c.total, color: c.color }));
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto pb-24 sm:pb-6">
       <PageHeader title="Dashboard" subtitle={`${getMonthName(month)} ${year}`}
         action={
           <div className="flex items-center gap-2">
             <button onClick={() => refetch()} disabled={isFetching}
-              className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
+              className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50 min-h-[40px] min-w-[40px] flex items-center justify-center"
               title="Atualizar">
               <RefreshCw className={["w-4 h-4", isFetching ? "animate-spin" : ""].join(" ")} />
             </button>
-            <Button leftIcon={<Plus className="w-4 h-4" />} onClick={() => setModalOpen(true)}>
+            {/* Botão "Novo Lançamento" oculto no mobile — substituído pelo FAB */}
+            <Button
+              className="hidden sm:inline-flex"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={() => setModalOpen(true)}
+            >
               Novo Lançamento
             </Button>
           </div>
@@ -97,12 +103,12 @@ export function DashboardPage() {
       {error && <ErrorMessage message="Erro ao carregar o dashboard. Tente novamente." />}
 
       {data && (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {/* Cards principais (Sprint 1) */}
           <SummaryCards totalIncome={data.totalIncome} totalExpense={data.totalExpense} balance={data.balance} />
 
           {/* Card de crédito + Quick info (Sprint 2) */}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <CreditSummaryCard used={data.totalCreditUsed} available={data.totalCreditAvailable} limit={data.totalCreditLimit} />
             <QuickInfoCard icon={TrendingDown} label="Comprometido em parcelas" value={formatCurrency(data.committedInstallments)} color="#f97316" />
             <QuickInfoCard icon={Calendar} label="Comprometido em fixas" value={formatCurrency(data.committedRecurring)} color="#8b5cf6" />
@@ -111,20 +117,20 @@ export function DashboardPage() {
           </div>
 
           {/* Previsão de saldo + próximas faturas */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card>
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Previsão de saldo</p>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
                 <div>
                   <p className="text-xs text-slate-400">Atual</p>
-                  <p className={["text-xl font-bold font-mono", data.balance >= 0 ? "text-brand-700" : "text-red-600"].join(" ")}>
+                  <p className={["text-lg sm:text-xl font-bold font-mono", data.balance >= 0 ? "text-brand-700" : "text-red-600"].join(" ")}>
                     {formatCurrency(data.balance)}
                   </p>
                 </div>
                 <div className="text-slate-200 text-2xl">→</div>
                 <div>
                   <p className="text-xs text-slate-400">Estimado (fim do mês)</p>
-                  <p className={["text-xl font-bold font-mono", data.balanceForecast >= 0 ? "text-emerald-600" : "text-red-600"].join(" ")}>
+                  <p className={["text-lg sm:text-xl font-bold font-mono", data.balanceForecast >= 0 ? "text-emerald-600" : "text-red-600"].join(" ")}>
                     {formatCurrency(data.balanceForecast)}
                   </p>
                 </div>
@@ -132,15 +138,15 @@ export function DashboardPage() {
               {(data.nextBill || data.nextInvoice) && (
                 <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
                   {data.nextBill && (
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-500">Próxima conta: <strong>{data.nextBill.description}</strong></span>
-                      <span className="font-mono text-red-600">{formatCurrency(data.nextBill.amount)}</span>
+                    <div className="flex justify-between text-xs gap-2">
+                      <span className="text-slate-500 truncate">Próxima conta: <strong>{data.nextBill.description}</strong></span>
+                      <span className="font-mono text-red-600 flex-shrink-0">{formatCurrency(data.nextBill.amount)}</span>
                     </div>
                   )}
                   {data.nextInvoice && (
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-500">Próxima fatura: <strong>{data.nextInvoice.cardName}</strong></span>
-                      <span className="font-mono text-red-600">{formatCurrency(data.nextInvoice.amount)}</span>
+                    <div className="flex justify-between text-xs gap-2">
+                      <span className="text-slate-500 truncate">Próxima fatura: <strong>{data.nextInvoice.cardName}</strong></span>
+                      <span className="font-mono text-red-600 flex-shrink-0">{formatCurrency(data.nextInvoice.amount)}</span>
                     </div>
                   )}
                 </div>
@@ -155,13 +161,13 @@ export function DashboardPage() {
               ) : (
                 <div className="space-y-2">
                   {data.nextInvoices.filter((i) => i.amount > 0).map((inv) => (
-                    <div key={inv.cardId} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: inv.color }} />
-                        <span className="text-sm text-slate-700">{inv.cardName}</span>
-                        <span className="text-xs text-slate-400">dia {inv.dueDay}</span>
+                    <div key={inv.cardId} className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: inv.color }} />
+                        <span className="text-sm text-slate-700 truncate">{inv.cardName}</span>
+                        <span className="text-xs text-slate-400 flex-shrink-0">dia {inv.dueDay}</span>
                       </div>
-                      <span className="text-sm font-semibold text-red-600 font-mono">{formatCurrency(inv.amount)}</span>
+                      <span className="text-sm font-semibold text-red-600 font-mono flex-shrink-0">{formatCurrency(inv.amount)}</span>
                     </div>
                   ))}
                 </div>
@@ -170,7 +176,7 @@ export function DashboardPage() {
           </div>
 
           {/* Gráficos */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <CategoryPieChart data={data.byCategory} />
             <UserBarChart data={data.byUser} />
           </div>
@@ -180,11 +186,11 @@ export function DashboardPage() {
             <Card>
               <p className="text-sm font-semibold text-slate-700 mb-4">Gastos por Cartão</p>
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={cardChartData} layout="vertical">
+                <BarChart data={cardChartData} layout="vertical" margin={{ left: 0, right: 8 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false}
+                  <XAxis type="number" tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false}
                     tickFormatter={(v) => `R$${(v / 1000).toFixed(1)}k`} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} width={100} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={80} />
                   <Tooltip formatter={(v: number) => [formatCurrency(v), "Gastos"]} />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {cardChartData.map((entry, i) => (
@@ -202,6 +208,9 @@ export function DashboardPage() {
       )}
 
       <NewTransactionModal isOpen={modalOpen} onClose={() => setModalOpen(false)} defaultUserId={currentUser?.id} />
+
+      {/* FAB — apenas mobile */}
+      <FAB onClick={() => setModalOpen(true)} label="Novo lançamento" />
     </div>
   );
 }
