@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronDown, ChevronUp, CalendarClock } from "lucide-react";
 import { Card, CardHeader } from "../ui/Card";
 import { UpcomingInstallmentSummary } from "../../types";

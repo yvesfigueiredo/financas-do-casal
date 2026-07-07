@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { Card } from "../components/ui/Card";
 import { PageLoader } from "../components/ui/Feedback";
 import { useTransactions } from "../hooks/useTransactions";
 import { useRecurringExpenses } from "../hooks/useRecurringExpenses";
-import { useInstallments } from "../hooks/useInstallments";
 import { MONTH_NAMES, formatCurrency } from "../utils/formatters";
 import { TransactionWithRelations, RecurringExpense } from "../types";
 
@@ -19,8 +18,6 @@ interface DayEvent {
 
 function buildDayEvents(
   day: number,
-  month: number,
-  year: number,
   transactions: TransactionWithRelations[],
   recurring: RecurringExpense[]
 ): DayEvent[] {
@@ -57,7 +54,6 @@ export function CalendarPage() {
 
   const { data: txData, isLoading } = useTransactions({ month: viewMonth, year: viewYear, limit: 100 });
   const { data: recurring } = useRecurringExpenses();
-  const { data: installments } = useInstallments();
 
   const transactions = txData?.data ?? [];
   const recurringList = recurring ?? [];
@@ -79,7 +75,7 @@ export function CalendarPage() {
   const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   const selectedEvents = selectedDay
-    ? buildDayEvents(selectedDay, viewMonth, viewYear, transactions, recurringList)
+    ? buildDayEvents(selectedDay, transactions, recurringList)
     : [];
 
   const totalIncome = transactions.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0);
@@ -135,7 +131,7 @@ export function CalendarPage() {
 
               {/* Dias */}
               {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                const events = buildDayEvents(day, viewMonth, viewYear, transactions, recurringList);
+                const events = buildDayEvents(day, transactions, recurringList);
                 const isToday = day === today.getDate() && viewMonth === today.getMonth() + 1 && viewYear === today.getFullYear();
                 const isSelected = day === selectedDay;
 

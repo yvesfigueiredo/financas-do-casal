@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -118,14 +117,14 @@ export function CashFlowPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#94a3b8" }}
-                  tickFormatter={(v) => v.split(" ")[0].substring(0, 3) + " " + v.split(" ")[1]?.slice(2)}
+                  tickFormatter={(v: string) => v.split(" ")[0].substring(0, 3) + " " + v.split(" ")[1]?.slice(2)}
                   axisLine={false} tickLine={false} interval={1} />
                 <YAxis tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false}
                   tickFormatter={tickFormatter} width={44} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="closingBalance" name="Saldo Projetado"
                   stroke="#0ea5e9" strokeWidth={2} fill="url(#balanceGrad)"
-                  dot={(props) => {
+                  dot={(props: { cx: number; cy: number; payload: { monthLabel: string; closingBalance: number } }) => {
                     const { cx, cy, payload } = props;
                     return <circle key={payload.monthLabel} cx={cx} cy={cy} r={2.5}
                       fill={payload.closingBalance >= 0 ? "#0ea5e9" : "#ef4444"} />;

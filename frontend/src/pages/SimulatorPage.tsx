@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FlaskConical, TrendingDown, CheckCircle, Save, Scale, Trash2 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -272,9 +272,9 @@ export function SimulatorPage() {
                   <BarChart data={result.monthlyImpact.filter((m) => m.impact > 0)}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                     <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#94a3b8" }}
-                      tickFormatter={(v) => v.split(" ")[0].substring(0, 3)} axisLine={false} tickLine={false} />
+                      tickFormatter={(v: string) => v.split(" ")[0].substring(0, 3)} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false}
-                      tickFormatter={(v) => `R$${(v / 1000).toFixed(1)}k`} />
+                      tickFormatter={(v: number) => `R$${(v / 1000).toFixed(1)}k`} />
                     <Tooltip formatter={(v: number) => [formatCurrency(v), "Impacto"]} />
                     <Bar dataKey="impact" name="Impacto" fill="#f87171" radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -377,7 +377,7 @@ export function SimulatorPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                     <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false}
-                      tickFormatter={(v) => `R$${(v / 1000).toFixed(1)}k`} />
+                      tickFormatter={(v: number) => `R$${(v / 1000).toFixed(1)}k`} />
                     <Tooltip formatter={(v: number) => [formatCurrency(v), "Impacto Total"]} />
                     <Legend />
                     <Bar dataKey="impacto" name="Impacto Total" fill="#0ea5e9" radius={[4, 4, 0, 0]} />

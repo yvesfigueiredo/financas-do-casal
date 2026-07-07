@@ -1,4 +1,3 @@
-import React from "react";
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import { Card } from "../ui/Card";
 import { formatCurrency } from "../../utils/formatters";

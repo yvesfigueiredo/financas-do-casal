@@ -39,7 +39,7 @@ export function TimelinePage() {
     { value: "180", label: "Próximos 180 dias" },
   ];
 
-  const grouped = events ? groupByDate(events) : new Map();
+  const grouped = events ? groupByDate(events) : new Map<string, TimelineEvent[]>();
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">

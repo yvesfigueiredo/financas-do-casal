@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BarChart,
   Bar,
@@ -93,11 +92,11 @@ export function UserBarChart({ data }: UserBarChartProps) {
             tick={{ fontSize: 11, fill: "#94a3b8" }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`}
+            tickFormatter={(v: number) => `R$${(v / 1000).toFixed(0)}k`}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            formatter={(value) => (
+            formatter={(value: string) => (
               <span className="text-xs text-slate-600">{value}</span>
             )}
           />

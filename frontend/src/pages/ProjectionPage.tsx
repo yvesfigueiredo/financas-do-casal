@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { PageHeader } from "../components/layout/PageHeader";
 import { Card, CardHeader } from "../components/ui/Card";
@@ -109,7 +109,7 @@ export function ProjectionPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#94a3b8" }}
-                  tickFormatter={(v) => v.split(" ")[0].substring(0, 3)} axisLine={false} tickLine={false} interval={period > 12 ? 1 : 0} />
+                  tickFormatter={(v: string) => v.split(" ")[0].substring(0, 3)} axisLine={false} tickLine={false} interval={period > 12 ? 1 : 0} />
                 <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} tickFormatter={tickFormatter} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="runningBalance" name="Saldo Projetado" stroke="#0ea5e9" strokeWidth={2.5} fill="url(#projGrad)" />

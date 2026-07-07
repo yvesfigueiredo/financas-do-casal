@@ -189,7 +189,7 @@ export function DashboardPage() {
                 <BarChart data={cardChartData} layout="vertical" margin={{ left: 0, right: 8 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false}
-                    tickFormatter={(v) => `R$${(v / 1000).toFixed(1)}k`} />
+                    tickFormatter={(v: number) => `R$${(v / 1000).toFixed(1)}k`} />
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={80} />
                   <Tooltip formatter={(v: number) => [formatCurrency(v), "Gastos"]} />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>

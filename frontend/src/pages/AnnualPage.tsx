@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
@@ -83,11 +83,11 @@ export function AnnualPage() {
               <LineChart data={data.months}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 11, fill: "#94a3b8" }}
-                  tickFormatter={(v) => v.substring(0, 3)} axisLine={false} tickLine={false} />
+                  tickFormatter={(v: string) => v.substring(0, 3)} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false}
                   tickFormatter={tickFormatter} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend formatter={(v) => <span className="text-xs text-slate-600">{v}</span>} />
+                <Legend formatter={(v: string) => <span className="text-xs text-slate-600">{v}</span>} />
                 <Line type="monotone" dataKey="totalIncome" name="Receitas" stroke="#10b981"
                   strokeWidth={2.5} dot={{ fill: "#10b981", r: 3 }} activeDot={{ r: 5 }} />
                 <Line type="monotone" dataKey="totalExpense" name="Despesas" stroke="#f87171"
@@ -103,13 +103,13 @@ export function AnnualPage() {
               <LineChart data={data.accumulatedBalance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 11, fill: "#94a3b8" }}
-                  tickFormatter={(v) => v.substring(0, 3)} axisLine={false} tickLine={false} />
+                  tickFormatter={(v: string) => v.substring(0, 3)} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false}
                   tickFormatter={tickFormatter} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line type="monotone" dataKey="balance" name="Saldo Acumulado"
                   stroke="#0ea5e9" strokeWidth={2.5}
-                  dot={(props) => {
+                  dot={(props: { cx: number; cy: number; payload: { month: number; balance: number } }) => {
                     const { cx, cy, payload } = props;
                     return <circle key={payload.month} cx={cx} cy={cy} r={3}
                       fill={payload.balance >= 0 ? "#0ea5e9" : "#ef4444"} />;
@@ -127,11 +127,11 @@ export function AnnualPage() {
               <BarChart data={data.futureCommitment}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="monthLabel" tick={{ fontSize: 10, fill: "#94a3b8" }}
-                  tickFormatter={(v) => v.split(" ")[0].substring(0, 3)} axisLine={false} tickLine={false} />
+                  tickFormatter={(v: string) => v.split(" ")[0].substring(0, 3)} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false}
                   tickFormatter={tickFormatter} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend formatter={(v) => <span className="text-xs text-slate-600">{v}</span>} />
+                <Legend formatter={(v: string) => <span className="text-xs text-slate-600">{v}</span>} />
                 <Bar dataKey="installments" name="Parcelas" stackId="a" fill="#0ea5e9" radius={[0, 0, 0, 0]} />
                 <Bar dataKey="recurring" name="Contas Fixas" stackId="a" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
               </BarChart>

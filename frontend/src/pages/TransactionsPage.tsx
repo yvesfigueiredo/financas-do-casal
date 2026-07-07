@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { PeriodFilter } from "../components/forms/PeriodFilter";
@@ -20,7 +20,7 @@ export function TransactionsPage() {
   const [page, setPage] = useState(1);
   const [typeFilter, setTypeFilter] = useState<TransactionType | "">("");
 
-  const { month, year, selectedUserId } = useFilterStore();
+  const { month, year } = useFilterStore();
   const { currentUser } = useAuthStore();
   const { data: users } = useUsers();
 

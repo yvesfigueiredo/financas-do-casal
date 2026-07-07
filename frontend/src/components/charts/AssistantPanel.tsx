@@ -1,4 +1,3 @@
-import React from "react";
 import { Sparkles, AlertTriangle, AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { Card, CardHeader } from "../ui/Card";
 import { FinancialInsight } from "../../types";

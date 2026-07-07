@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "/api",
@@ -15,7 +15,7 @@ api.interceptors.response.use(
     // Retornamos direto o response para os services tratarem
     return response;
   },
-  (error) => {
+  (error: AxiosError<{ error?: string }>) => {
     const message =
       error.response?.data?.error ??
       error.message ??

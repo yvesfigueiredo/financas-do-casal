@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Plus, Trash2, CreditCard } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { NewTransactionModal } from "../components/forms/NewTransactionModal";

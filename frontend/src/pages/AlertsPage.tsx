@@ -1,7 +1,5 @@
-import React from "react";
 import { Bell, CheckCheck, X, RefreshCw } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
-import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { EmptyState, PageLoader } from "../components/ui/Feedback";
 import { useAlerts, useMarkAlertsRead, useDismissAlerts } from "../hooks/useAlerts";
@@ -65,7 +63,7 @@ function AlertCard({ alert, onRead, onDismiss }: {
 }
 
 export function AlertsPage() {
-  const { data, isLoading, refetch } = useAlerts();
+  const { data, isLoading } = useAlerts();
   const markReadMutation = useMarkAlertsRead();
   const dismissMutation = useDismissAlerts();
   const qc = useQueryClient();

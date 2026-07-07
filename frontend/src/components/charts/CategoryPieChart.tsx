@@ -1,4 +1,3 @@
-import React from "react";
 import {
   PieChart,
   Pie,
@@ -92,7 +91,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            formatter={(value) => (
+            formatter={(value: string) => (
               <span className="text-xs text-slate-600">{value}</span>
             )}
           />
