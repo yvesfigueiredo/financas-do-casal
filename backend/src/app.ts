@@ -31,7 +31,26 @@ const app = express();
 
 app.use(
   cors({
-    origin: config.frontendUrl,
+    origin(origin, callback) {
+      // Permite chamadas sem Origin (Postman, curl, apps nativos)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Em desenvolvimento, aceita qualquer origem
+      if (config.isDevelopment) {
+        return callback(null, true);
+      }
+
+      // Em produção, verifica a lista permitida
+      if (config.frontendUrls.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.warn("Origem bloqueada pelo CORS:", origin);
+
+      callback(new Error("Origem não permitida pelo CORS"));
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
